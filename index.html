@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>设备信息管理系统2.0版</title>
+    <meta http-equiv="Content-Security-Policy"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="icon" href="logo.ico" type="image/x-icon"/>  
+    <script src="moment.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .login-pad {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url(bk.png);
+            background-size: cover;
+            color: white;
+        }
+        .login-logo {
+            width: 100px;
+            margin: 5px;
+        }
+        .black-bk-color {
+            background-color: rgba(0, 0, 0, .7);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0%;
+            top: 0%;
+            z-index: -1;
+        }
+        @keyframes opacity-appear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .password-pad {
+            width: 200px;
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, .5);
+            animation-name: opacity-appear;
+            animation-duration: .5s;
+        }
+        .password-input {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            padding: 5px;
+            margin: 5px 0px;
+            transition: .3s;
+        }
+        .password-button {
+            background-color: rgb(50, 50, 50);
+            padding: 5px;
+            margin: 5px 0px;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            transition: .3s;
+        }
+        .password-button:hover {
+            background-color: rgb(80, 80, 80);
+        }
+        .password-button:active {
+            background-color: rgb(100, 100, 100);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid white;
+            padding: 3px;
+        }
+        thead {
+        }
+        thead th {
+            position: sticky;
+            top: -1px;
+            background-color: rgb(35, 148, 175);
+            padding: 10px 0px;
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background: linear-gradient(white, rgb(236, 248, 251), white);
+        }
+        tbody tr:nth-child(odd) {
+            background: white;
+        }
+        tbody td {
+            text-align: center;
+        }
+        .chart-pad {
+            position: fixed;
+            left: 12%;
+            top: 0%;
+            width: 88%;
+            height: 100%;
+            overflow-y: auto;
+        }
+        table input, table select, table input:focus, table select:focus {
+            border: none;
+            outline: none;
+            margin: 0px;
+            padding: 0px;
+            background-color: transparent;
+            text-align: center;
+            width: 100%;
+        }
+        .left-pad {
+            overflow: hidden;
+            width: 12%;
+            background-color: black;
+            position: fixed;
+            left: 0%;
+            top: 0%;
+            height: 100%;
+            padding: 5px;
+        }
+        .table-name-container {
+            height: 550px;
+            width: 115%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        .table-name {
+            color: white;
+            width: 100%;
+            padding: 10px 0px;
+            background-color: rgb(50, 50, 50);
+            margin: 5px 0px;
+            transition: .3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .table-name input, .table-name input:disabled {
+            background-color: transparent;
+            text-align: center;
+            color: white;
+            border: none;
+            outline: none;
+            font-weight: bold;
+            font-size: 18px;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            height: 20px;
+        }
+        .table-name-control {
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            opacity: 0;
+            transition: .3s;
+        }
+        .table-name:hover {
+            background-color: rgb(80, 80, 80);
+        }
+        .table-name:hover .table-name-control {
+            opacity: 1;
+        }
+        .table-name.selected {
+            background-color: rgb(100, 100, 100);
+            transform: translateX(20px);
+        }
+        .left-warning {
+            background-color: yellow;
+        }
+        .left-error {
+            background-color: red;
+        }
+        .left-user-checked {
+            background-color: purple;
+            color: white;
+        }
+        .left-admin-checked {
+            background-color: blue;
+            color: white;
+        }
+        .control-but {
+            background-color: rgb(50, 50, 50);
+            border: none;
+            outline: none;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            padding: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .control-but:hover {
+            background-color: rgb(80, 80, 80);
+        }
+        .control-but:active {
+            background-color: rgb(100, 100, 100);
+        }
+        @keyframes delete-modal-animation {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .delete-modal {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(200, 200, 200);
+            animation-duration: .3s;
+            animation-name: delete-modal-animation;
+            color: black;
+            padding: 0px 20px;
+        }
+        .delete-modal-but {
+            float: right;
+        }
+        .delete-modal-but i {
+            background-color: rgb(180, 180, 180);
+            width: 50px;
+            margin: 0px 5px;
+            text-align: center;
+        }
+        .sound-check-cont {
+            text-align: right;
+            margin: 10px 0px;
+        }
+        .sound-check-but {
+            background-color: rgb(50, 50, 100);
+            color: white;
+            font-weight: bold;
+            padding: 5px 20px;
+            margin: 5px;
+            border-radius: 10px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            transition: .3s;
+            display: inline-block;
+        }
+        .sound-check-but:hover {
+            background-color: rgb(10, 10, 10);
+        }
+        .sound-check-but:active {
+            background-color: rgb(50, 50, 50);
+        }
+        .leftpad-logo {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 100%;
+            z-index: -1;
+            opacity: .2;
+        }
+        @keyframes wdp-appear {
+            from {
+                left: -100%;
+            }
+            to {
+                left: 0%;
+            }
+        }
+        .warning-data-pad, .settings-pad {
+            position: fixed;
+            background-color: rgba(0, 0, 0, .7);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            left: 0%;
+            top: 0%;
+            align-items: center;
+            justify-content: center;
+            animation-name: wdp-appear;
+            animation-duration: .3s;
+        }
+        .wdata-cont {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .wdata-close, .settings-close {
+            font-size: 30px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: white;
+        }
+        .wdata-open {
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        .but-cont {
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-gap: 5px;
+        }
+        .record-sbut {
+            font-size: 16px;
+            color: white;
+            width: 20px;
+            height: 20px;
+            padding: 2px;
+            border-radius: 50%;
+            margin: 0px 3px;
+        }
+        .current-time {
+            position: absolute;
+            left: 20px;
+            top: 0px;
+            color: white;
+            font-size: 80px;
+            font-weight: bold;
+        }
+        .change-pass-cont {
+            width: 200px;
+        }
+        .left-filter, .left-filter:focus {
+            color: white;
+            font-weight: bold;
+            width: 60px;
+        }
+        .left-filter::-webkit-input-placeholder {
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="vue-container">
+        <login-pad
+            v-if="!logedIn"
+            @login="login"
+            :wrongpass="wrongpass"
+            :savedadminpass="saved_admin_password"
+            :savednormalpass="saved_normal_password"
+        ></login-pad>
+        <div v-if="logedIn">
+            <left-pad
+                :tables="tableNames"
+                :deleting="deleting"
+                @select="selectTable"
+                @load="readFromExcel"
+                @add="addTable"
+                @edit="editTable"
+                @delete="deleteTable"
+                @namechanged="tableNameChanged"
+                @locked="tableNameLocked"
+                @deletecheck="deleteCheck"
+                @deletecancel="deleteCancel"
+                @openwdata="wdataShow = true"
+                @opensettings="settingsClicked"
+                :editable="usertype === 'normal'"
+            ></left-pad>
+            <chart-pad
+                v-if="logedIn"
+                :data="cur_table_data"
+                @changed="changed"
+                @delete="recordDelete"
+                v-model:cleanfilter="cleanfilter"
+                v-model:repairfilter="repairfilter"
+                :editable="usertype === 'normal'"
+            ></chart-pad>
+            <warning-data-pad
+                :data="warningData"
+                v-if="wdataShow"
+                :sound="sound"
+                @close="wdataShow = false"
+                @usercheckall="userCheckAll"
+                @usercheck="userCheck"
+                :editable="usertype === 'admin'"
+            ></warning-data-pad>
+            <settings-pad
+                v-if="settingsShow"
+                @close="settingsShow = false"
+                @changepass="changepass"
+            ></settings-pad>
+        </div>
+    </div>
+    <script src="./vue.global.js"></script>
+    <script src="./vue.js"></script>
+</body>
+</html>
